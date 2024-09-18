@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package walnut.user;
+
+// Defines a user. A user is a person who can log in to the system.
+message User {
+    string id = 1;
+    string username = 2;
+    string first_name = 3;
+    string last_name = 4;
+    repeated Role role = 5;
+}
+
+// Defines the role of a user. The role is used to determine the 
+// permissions of a user.
+message Role {
+    string id = 1;
+    string name = 2;
+    string description = 3;
+}

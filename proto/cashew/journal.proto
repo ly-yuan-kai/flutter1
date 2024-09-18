@@ -1,0 +1,87 @@
+syntax = "proto3";
+
+package cashew.journal;
+
+import "cashew/account.proto";
+import "walnut/corp.proto";
+import "walnut/maintenance.proto";
+import "walnut/date.proto";
+
+// A journal is a accounting transaction record that bookkeeps the 
+// transactions of the enterprise.
+message Journal {
+    // id is the unique identifier of the journal, this is automatically
+    // set by the system when the journal is first created. The id does
+    // not change once it is set.
+    optional string id = 1;
+
+    // corp is the corporation that the journal belongs to. This field 
+    // could be input by the user but generally is automatically populated
+    // based on the interface in the UI.
+    optional walnut.corp.Corp corp = 2;
+
+    // This is the date of the transaction.
+    optional walnut.date.Date date = 3;
+
+    // the sequence number of the journal. This is automatically set by
+    // UI system.
+    optional string seqno = 4;
+
+    // entries is the list of journal entries that make up the journal.
+    // There should be at least two entries in the journal, one for the
+    // debit and one for the credit.
+    repeated JournalEntry entries = 5;
+
+    // the maintenance information for the journal.
+    walnut.maintenance.Maintenance maintenance = 6;
+}
+
+// Journal entry stores the actual transaction information of the journal.
+message JournalEntry {
+    optional string id = 1;
+    optional string seqno = 2;
+    optional cashew.account.Account account = 3;
+    optional int64 debit = 4;
+    optional int64 credit = 5;
+}
+
+message JournalRequest {
+    optional string id = 1;
+    optional walnut.date.Date date = 2;
+
+    message JournalEntryFields {
+        optional bool id = 1;
+        optional bool seqno = 2;
+        optional bool account = 3;
+        optional bool debit = 4;
+        optional bool credit = 5;
+    }
+
+    // Fields to be returned.
+    message Fields {
+        optional bool id = 1;
+        optional bool corp = 2;
+        optional bool seqno = 3;
+        optional bool account = 4;
+        optional bool entries = 5;
+        optional bool maintenance = 6;
+        JournalEntryFields entry_fields = 7;
+    }
+
+    Fields fields = 3;
+}
+
+message JournalReply {
+    // Payload of the reply.
+    repeated Journal journal = 1;
+
+    // The number of records in the reply.
+    int32 count = 2;
+
+    // Addtional message of the reply.
+    map<string, string> message = 3;
+}
+
+service JournalRecord {
+    rpc GetOne (JournalRequest) returns (JournalReply);
+}

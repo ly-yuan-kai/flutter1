@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package cashew.account;
+
+import "walnut/maintenance.proto";
+
+message Account {
+    // id is the unique identifier of the account, this is automatically
+    // set by the system. The id does not change once it is set.
+    string id = 1;
+
+    // code is the code of the account. This is generally a human readable
+    // code that is used to identify the account. The code is unique within
+    // the corporation.
+    string code = 2;
+
+    // title is the title of the account. This is generally conforms to the
+    // accounting standards.
+    string title = 3;
+
+    // maintenance information for the account.
+    walnut.maintenance.Maintenance maintenance = 4;
+}

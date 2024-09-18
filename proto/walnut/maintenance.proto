@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package walnut.maintenance;
+
+import "google/protobuf/timestamp.proto";
+import "walnut/user.proto";
+
+// Maintenance information for a record.
+message Maintenance {
+    // Timestamp when the record was first created.
+    google.protobuf.Timestamp created_at = 1;
+    
+    // User who created the record.
+    walnut.user.User created_by = 2;
+
+    // Timestamp when the record was last modified.
+    google.protobuf.Timestamp modified_at = 3;
+
+    // User who last modified the record.
+    walnut.user.User modified_by = 4;
+}
