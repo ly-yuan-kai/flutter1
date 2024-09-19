@@ -12,31 +12,74 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build-windows:
-    name: Build for Windows
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v3
+  # build-windows:
+  #   name: Build for Windows
+  #   runs-on: windows-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
 
-      # Set up Flutter on Windows
-      - uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.22.2'
-          channel: 'stable'
+  #     # Set up Flutter on Windows
+  #     - uses: subosito/flutter-action@v2
+  #       with:
+  #         flutter-version: '3.22.2'
+  #         channel: 'stable'
 
-      - name: Install Dependencies
-        run: flutter pub get
+  #     - name: Install Dependencies
+  #       run: flutter pub get
 
-      # Run Flutter build for Windows
-      - name: Build Windows app
-        run: flutter build windows
+  #     # Run Flutter build for Windows
+  #     - name: Build Windows app
+  #       run: flutter build windows
 
+  #     - name: Archive Release
+  #       uses: thedoctor0/zip-release@master
+  #       with:
+  #         type: 'zip'
+  #         filename: Flutter1-${{github.ref_name}}-windows.zip
+  #         directory: build/windows/runner/Release
+  #     - name: Windows Release
+  #       uses: softprops/action-gh-release@v1
+  #       if: startsWith(github.ref, 'refs/tags/')
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       with:
+  #         files: build/windows/runner/Release/Flutter1-${{github.ref_name}}-windows.zip
       # Optionally, you can upload the build artifacts
-      - name: Upload Windows Build
-        uses: actions/upload-artifact@v3
+      # - name: Upload Windows Build
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: windows-build
+      #     path: build/windows/runner/Release/
+  build-and-release-windows:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: subosito/flutter-action@v1
         with:
-          name: windows-build
-          path: build/windows/runner/Release/
+          channel: 'stable'
+          flutter-version: '3.22.2'
+      - name: Install project dependencies
+        run: flutter pub get
+      # - name: Generate intermediates
+      #   run: flutter pub run build_runner build --delete-conflicting-outputs
+      - name: Enable windows build
+        run: flutter config --enable-windows-desktop
+      - name: Build artifacts
+        run: flutter build windows --release
+      - name: Archive Release
+        uses: thedoctor0/zip-release@master
+        with:
+          type: 'zip'
+          filename: MacRecoveryX-${{github.ref_name}}-windows.zip
+          directory: build/windows/x64/runner/Release
+      - name: Windows Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          files: build/windows/runner/Release/MacRecoveryX-${{github.ref_name}}-windows.zip
           
   build-macos:
     name: Build for macOS
