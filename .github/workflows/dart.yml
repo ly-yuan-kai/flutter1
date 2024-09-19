@@ -1,0 +1,63 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: Build Flutter App for Windows and macOS
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-windows:
+    name: Build for Windows
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      # Set up Flutter on Windows
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 'stable'
+
+      # Run Flutter build for Windows
+      - name: Build Windows app
+        run: flutter build windows
+
+      # Optionally, you can upload the build artifacts
+      - name: Upload Windows Build
+        uses: actions/upload-artifact@v3
+        with:
+          name: windows-build
+          path: build/windows/runner/Release/
+          
+  build-macos:
+    name: Build for macOS
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      # Set up Flutter on macOS
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 'stable'
+
+      # Run Flutter build for macOS
+      - name: Build macOS app
+        run: flutter build macos
+
+      # Optionally, you can upload the build artifacts
+      - name: Upload macOS Build
+        uses: actions/upload-artifact@v3
+        with:
+          name: macos-build
+          path: build/macos/Build/Products/Release/
+
+      # Your project will need to have tests in test/ and a dependency on
+      # package:test for this step to succeed. Note that Flutter projects will
+      # want to change this to 'flutter test'.
+      # - name: Run tests
+      #   run: dart test
