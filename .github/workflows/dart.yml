@@ -21,7 +21,11 @@ jobs:
       # Set up Flutter on Windows
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.4.3'
+          flutter-version: '3.22.2'
+          channel: 'stable'
+
+      - name: Install Dependencies
+        run: flutter pub get
 
       # Run Flutter build for Windows
       - name: Build Windows app
@@ -43,8 +47,12 @@ jobs:
       # Set up Flutter on macOS
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: 'stable'
+          flutter-version: '3.22.2'
+          channel: 'stable'
 
+      - name: Install Dependencies
+        run: flutter pub get
+        
       # Run Flutter build for macOS
       - name: Build macOS app
         run: flutter build macos
