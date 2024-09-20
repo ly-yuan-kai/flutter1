@@ -93,6 +93,7 @@ jobs:
       - name: Check if Tag Exists
         id: check_tag
         run: |
+          echo "Version $env:VERSION"
           if (git rev-parse "v$env:VERSION" -ErrorAction SilentlyContinue) {
             echo "TAG_EXISTS=true" >> $env:GITHUB_ENV
           } else {
