@@ -78,11 +78,16 @@ jobs:
           path: |
             build/windows/x64/runner/Release/*
 
-      - name: Extract version from pubspec.yaml
+      # - name: Extract version from pubspec.yaml
+      #   id: extract_version
+      #   run: |
+      #     version=$(grep '^version: ' pubspec.yaml | cut -d ' ' -f 2 | tr -d '\r')
+      #     echo "VERSION=$version" >> $GITHUB_ENV
+      - name: Extract version from pubspec.yaml (Windows)
         id: extract_version
         run: |
-          version=$(grep '^version: ' pubspec.yaml | cut -d ' ' -f 2 | tr -d '\r')
-          echo "VERSION=$version" >> $GITHUB_ENV
+          $version = (Get-Content pubspec.yaml | Select-String '^version: ' | ForEach-Object { $_.Line.Split(' ')[1].Trim() })
+          echo "Version: $version"
 
       - name: Check if Tag Exists
         id: check_tag
