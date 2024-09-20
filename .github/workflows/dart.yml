@@ -90,16 +90,30 @@ jobs:
           echo "VERSION=$version" >> $env:GITHUB_ENV
           echo "Version: $version"
 
+      - name: Fetch Git Tags
+        run: git fetch --tags
+        shell: pwsh
+        
       - name: Check if Tag Exists
         id: check_tag
         run: |
-          echo "Version $env:VERSION"
-          if (git rev-parse "v$env:VERSION" -ErrorAction SilentlyContinue) {
-            echo "TAG_EXISTS=true" >> $env:GITHUB_ENV
-          } else {
+          if (-not (git tag -l "v$env:VERSION")) {
             echo "TAG_EXISTS=false" >> $env:GITHUB_ENV
+          } else {
+            echo "TAG_EXISTS=true" >> $env:GITHUB_ENV
           }
         shell: pwsh
+
+      - name: Create Git Tag
+        if: env.TAG_EXISTS == 'false'
+        shell: pwsh
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag "v$env:VERSION"
+          git push origin "v$env:VERSION"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
       - name: Modify Tag
         if: env.TAG_EXISTS == 'true'
