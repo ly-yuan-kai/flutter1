@@ -75,13 +75,11 @@ jobs:
         with:
           files: build/windows/runner/Release/MacRecoveryX-${{github.ref_name}}-windows.zip
 
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
+      - name: Push APK to Releases
+        uses: ncipollo/release-action@v1
         with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./MacRecoveryX-${{github.ref_name}}-windows.zip
-          asset_name: MacRecoveryX-${{github.ref_name}}-windows.zip
-          asset_content_type: application/zip
+          artifacts: "build/windows/x64/runner/Release/*"
+          token: ${{ secrets.TOKEN }}
           
   # build-macos:
   #   name: Build for macOS
