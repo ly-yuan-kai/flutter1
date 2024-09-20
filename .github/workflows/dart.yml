@@ -131,7 +131,9 @@ jobs:
         with:
           artifacts: "build/windows/x64/runner/Release/*"
           tag: v${{ env.VERSION }}
-          token: ${{ secrets.TOKEN }}      
+          token: ${{ secrets.TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
   # build-macos:
   #   name: Build for macOS
