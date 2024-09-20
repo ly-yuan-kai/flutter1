@@ -92,11 +92,13 @@ jobs:
       - name: Check if Tag Exists
         id: check_tag
         run: |
-          if (git rev-parse "v$env:VERSION" -ErrorAction SilentlyContinue) {
+          $version = "v$($env:VERSION)"
+          if (git rev-parse $version -ErrorAction SilentlyContinue) {
             echo "TAG_EXISTS=true" >> $env:GITHUB_ENV
           } else {
             echo "TAG_EXISTS=false" >> $env:GITHUB_ENV
           }
+        shell: pwsh
           
       - name: Modify Tag
         if: env.TAG_EXISTS == 'true'
@@ -104,6 +106,7 @@ jobs:
         run: |
           $new_version = "$env:VERSION-build-$env:GITHUB_RUN_NUMBER"
           echo "VERSION=$new_version" >> $env:GITHUB_ENV
+        shell: pwsh
 
       - name: Create Release
         uses: ncipollo/release-action@v1
