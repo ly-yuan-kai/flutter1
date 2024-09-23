@@ -72,14 +72,14 @@ jobs:
         with:
           type: 'zip'
           filename: flutter1-${{github.ref_name}}-windows.zip
-          directory: build/windows/x64/runner/Release
+          directory: build/windows/x64/runner/Release/*
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3
         with:
           name: Releases
           path: |
-            build/windows/x64/runner/Release
+            build/windows/x64/runner/Release/*
 
       # - name: Extract version from pubspec.yaml
       #   id: extract_version
@@ -129,7 +129,7 @@ jobs:
       - name: Create Release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "build/windows/x64/runner/Release"
+          artifacts: "build/windows/x64/runner/Release/*"
           tag: v${{ env.VERSION }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
