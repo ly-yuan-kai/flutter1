@@ -78,8 +78,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Releases
-          path: |
-            build/windows/x64/runner/Release/*
+          path: flutter1-${{github.ref_name}}-windows.zip
       # - name: Extract version from pubspec.yaml
       #   id: extract_version
       #   run: |
