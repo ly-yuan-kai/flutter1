@@ -71,20 +71,15 @@ jobs:
         uses: thedoctor0/zip-release@master
         with:
           type: 'zip'
-          filename: flutter1-${{github.ref_name}}-windows.zip
+          # filename: flutter1-${{github.ref_name}}-windows.zip
+          filename: flutter1-windows.zip
           directory: build/windows/x64/runner/Release
-
-      - name: List Files
-        run: dir
-
-      - name: List Build Files
-        run: dir build/windows/x64/runner/Release
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3
         with:
           name: Releases
-          path: flutter1-${{github.ref_name}}-windows.zip
+          path: flutter1-windows.zip
           
       # - name: Extract version from pubspec.yaml
       #   id: extract_version
@@ -134,7 +129,7 @@ jobs:
       - name: Create Release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "./flutter1-${{github.ref_name}}-windows.zip"
+          artifacts: "flutter1-windows.zip"
           tag: v${{ env.VERSION }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
