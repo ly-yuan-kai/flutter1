@@ -127,7 +127,7 @@ jobs:
       - name: Create Release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "build/windows/x64/runner/Release/*"
+          artifacts: "flutter1-${{github.ref_name}}-windows.zip"
           tag: v${{ env.VERSION }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
