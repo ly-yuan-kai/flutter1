@@ -77,16 +77,21 @@ jobs:
       - name: List Files
         run: dir
 
+      - name: List Build Files
+        run: dir build/windows/x64/runner/Release
+
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3
         with:
           name: Releases
           path: flutter1-${{github.ref_name}}-windows.zip
+          
       # - name: Extract version from pubspec.yaml
       #   id: extract_version
       #   run: |
       #     version=$(grep '^version: ' pubspec.yaml | cut -d ' ' -f 2 | tr -d '\r')
       #     echo "VERSION=$version" >> $GITHUB_ENV
+      
       - name: Extract version from pubspec.yaml (Windows)
         id: extract_version
         run: |
