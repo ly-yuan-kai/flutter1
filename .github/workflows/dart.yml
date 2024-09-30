@@ -84,7 +84,7 @@ jobs:
       #     directory: build/windows/x64/runner/Release
 
       - name: List Files
-        run: dir dist/
+        run: dir dist/1.0.1/
 
       - name: List Build Files
         run: dir build/windows/x64/runner/Release
