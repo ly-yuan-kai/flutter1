@@ -84,7 +84,7 @@ jobs:
       #     directory: build/windows/x64/runner/Release
 
       - name: List Files
-        run: dir dist/
+        run: dir dist/1.0.1/
 
       - name: List Build Files
         run: dir build/windows/x64/runner/Release
@@ -132,18 +132,18 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Modify Tag
-        if: env.TAG_EXISTS == 'true'
-        id: modify_tag
-        run: |
-          $new_version = "$env:VERSION-build-$env:GITHUB_RUN_NUMBER"
-          echo "VERSION=$new_version" >> $env:GITHUB_ENV
-        shell: pwsh
+      # - name: Modify Tag
+      #   if: env.TAG_EXISTS == 'true'
+      #   id: modify_tag
+      #   run: |
+      #     $new_version = "$env:VERSION-build-$env:GITHUB_RUN_NUMBER"
+      #     echo "VERSION=$new_version" >> $env:GITHUB_ENV
+      #   shell: pwsh
 
       - name: Create Release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "dist/$env:VERSION/*"
+          artifacts: "dist/${{ env.VERSION }}/flutter_application_1-1.0.1+1.0.1-windows.msix"
           tag: v${{ env.VERSION }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
