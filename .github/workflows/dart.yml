@@ -83,17 +83,14 @@ jobs:
       #     filename: flutter1-windows.zip
       #     directory: build/windows/x64/runner/Release
 
-      - name: List Files
-        run: dir dist/1.0.1/
+      # - name: List Files
+      #   run: dir dist/1.0.2/
 
-      - name: List Build Files
-        run: dir build/windows/x64/runner/Release
-
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: Releases
-          path: flutter1-windows.zip
+      # - name: Upload Artifacts
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: Releases
+      #     path: flutter1-windows.zip
           
       # - name: Extract version from pubspec.yaml
       #   id: extract_version
@@ -143,7 +140,7 @@ jobs:
       - name: Create Release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "dist/${{ env.VERSION }}/flutter_application_1-1.0.1+1.0.1-windows.msix"
+          artifacts: "dist/${{ env.VERSION }}/flutter_application_1-${{ env.VERSION }}+${{ env.VERSION }}-windows.msix"
           tag: v${{ env.VERSION }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
