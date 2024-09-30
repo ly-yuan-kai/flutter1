@@ -132,13 +132,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Modify Tag
-        if: env.TAG_EXISTS == 'true'
-        id: modify_tag
-        run: |
-          $new_version = "$env:VERSION-build-$env:GITHUB_RUN_NUMBER"
-          echo "VERSION=$new_version" >> $env:GITHUB_ENV
-        shell: pwsh
+      # - name: Modify Tag
+      #   if: env.TAG_EXISTS == 'true'
+      #   id: modify_tag
+      #   run: |
+      #     $new_version = "$env:VERSION-build-$env:GITHUB_RUN_NUMBER"
+      #     echo "VERSION=$new_version" >> $env:GITHUB_ENV
+      #   shell: pwsh
 
       - name: Create Release
         uses: ncipollo/release-action@v1
