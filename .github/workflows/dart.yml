@@ -11,6 +11,9 @@ on:
   pull_request:
     branches: [ "main" ]
 
+permissions:
+  contents: write  # 確保給 GITHUB_TOKEN 寫入權限
+
 jobs:
   # build-windows:
   #   name: Build for Windows
@@ -43,7 +46,7 @@ jobs:
   #         asset_path: ./my_app_windows.zip
   #         asset_name: my_app_windows.zip
   #         asset_content_type: application/zip
-          
+
   build-and-release-windows:
     runs-on: windows-latest
 
@@ -53,14 +56,14 @@ jobs:
         with:
           channel: 'stable'
           flutter-version: '3.22.2'
-          
+
       - name: Install project dependencies
         run: flutter pub get
       # - name: Generate intermediates
       #   run: flutter pub run build_runner build --delete-conflicting-outputs
       - name: Enable windows build
         run: flutter config --enable-windows-desktop
-        
+
       - name: Build artifacts
         run: flutter build windows --release
 
@@ -68,39 +71,59 @@ jobs:
         uses: thedoctor0/zip-release@master
         with:
           type: 'zip'
-          filename: flutter1-${{github.ref_name}}-windows.zip
+          # filename: flutter1-${{github.ref_name}}-windows.zip
+          filename: flutter1-windows.zip
           directory: build/windows/x64/runner/Release
+
+      - name: List Files
+        run: dir
+
+      - name: List Build Files
+        run: dir build/windows/x64/runner/Release
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3
         with:
           name: Releases
-          path: |
-            build/windows/x64/runner/Release/*
-
+          path: flutter1-windows.zip
+          
       # - name: Extract version from pubspec.yaml
       #   id: extract_version
       #   run: |
       #     version=$(grep '^version: ' pubspec.yaml | cut -d ' ' -f 2 | tr -d '\r')
       #     echo "VERSION=$version" >> $GITHUB_ENV
+      
       - name: Extract version from pubspec.yaml (Windows)
         id: extract_version
         run: |
           $version = (Get-Content pubspec.yaml | Select-String '^version: ' | ForEach-Object { $_.Line.Split(' ')[1].Trim() })
-          $env:VERSION = $version
+          echo "VERSION=$version" >> $env:GITHUB_ENV
           echo "Version: $version"
+      - name: Fetch Git Tags
+        run: git fetch --tags
+        shell: pwsh
 
       - name: Check if Tag Exists
         id: check_tag
         run: |
-          echo "Version $env:VERSION"
-          if (git rev-parse "v$env:VERSION" -ErrorAction SilentlyContinue) {
-            echo "TAG_EXISTS=true" >> $env:GITHUB_ENV
-          } else {
+          if (-not (git tag -l "v$env:VERSION")) {
             echo "TAG_EXISTS=false" >> $env:GITHUB_ENV
+          } else {
+            echo "TAG_EXISTS=true" >> $env:GITHUB_ENV
           }
         shell: pwsh
-          
+
+      - name: Create Git Tag
+        if: env.TAG_EXISTS == 'false'
+        shell: pwsh
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag "v$env:VERSION"
+          git push origin "v$env:VERSION"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Modify Tag
         if: env.TAG_EXISTS == 'true'
         id: modify_tag
@@ -112,10 +135,11 @@ jobs:
       - name: Create Release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "build/windows/x64/runner/Release/*"
+          artifacts: "build/windows/x64/runner/Release/flutter1-windows.zip"
           tag: v${{ env.VERSION }}
-          token: ${{ secrets.TOKEN }}      
-          
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   # build-macos:
   #   name: Build for macOS
   #   runs-on: macos-latest
@@ -130,7 +154,7 @@ jobs:
 
   #     - name: Install Dependencies
   #       run: flutter pub get
-        
+
   #     # Run Flutter build for macOS
   #     - name: Build macOS app
   #       run: flutter build macos
