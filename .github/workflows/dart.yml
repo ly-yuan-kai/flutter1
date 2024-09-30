@@ -143,7 +143,7 @@ jobs:
       - name: Create Release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "dist/${{ env.VERSION }}/*"
+          artifacts: "dist/${{ env.VERSION }}/flutter_application_1-1.0.1+1.0.1-windows.msix"
           tag: v${{ env.VERSION }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
