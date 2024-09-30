@@ -3,7 +3,7 @@ releases:
   - name: dev
     jobs:
       # Build and publish your ipa pkg to pgyer
-      - name: release-dev-ios
+      - name: release-dev
         package:
           platform: windows
           target: msix
